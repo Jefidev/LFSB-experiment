@@ -1,0 +1,8 @@
+{
+  "random_state": 42,
+
+  "data-source" : {
+    "folder": "",
+    "labels": ""
+  }
+}
