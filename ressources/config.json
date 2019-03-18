@@ -1,8 +1,10 @@
 {
-  "random_state": 42,
+  "randomstate": 42,
 
-  "data-source" : {
-    "folder": "",
-    "labels": ""
+  "datasource" : {
+    "base_dir": "../embedding/single_img",
+    "labels": "../embedding/utils/label.csv",
+    "train_size": 0.8,
+    "sequence_type": "triplet_images"
   }
 }

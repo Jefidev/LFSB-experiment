@@ -6,21 +6,18 @@ from keras.utils import Sequence
 
 class ImageSequence(Sequence):
 
-    def __init__(self, x, y, batch_size, base_folder, resize=None):
+    def __init__(self, x, y, batch_size, resize=None):
         self.x = x
         self.y = y
 
         self.batch = batch_size
-        self.folder = base_folder
         self.resize = resize
 
     def __len__(self):
         return int(np.ceil(len(self.x) / float(self.batch)))
 
     def _load_images(self, img):
-        full_img_path = "{}/{}".format(self.folder, img)
-
-        img = cv2.imread(full_img_path) / 255
+        img = cv2.imread(img) / 255
 
         if self.resize:
             fx = self.resize[0]
