@@ -1,8 +1,8 @@
 import numpy as np
-
 import pandas as pd
-from data_sequence.image_sequence import ImageSequence
 from loguru import logger
+
+from data_sequence.image_sequence import ImageSequence
 
 
 class DataSourceProcessor():
@@ -20,7 +20,7 @@ class DataSourceProcessor():
         return self.test_sequence
 
     def _load_labels(self):
-        label_df = pd.read_csv(self.labels)
+        label_df = self._load_sign_dataframe(self.labels)
 
         if "path" in label_df.columns:
             label_df["path"] = label_df["path"].apply(
@@ -46,3 +46,11 @@ class DataSourceProcessor():
 
         self.train_sequence = ImageSequence(train["path"], train["label"], 15)
         self.test_sequence = ImageSequence(test["path"], test["label"], 15)
+
+
+    def _load_sign_dataframe(self, path):
+        data = pd.read_csv(path)
+
+        # Filtering descriptive sign + undefined signs
+        data = data[~data["label"].isin(["DS", "INDECIPHERABLE"])]
+        return data

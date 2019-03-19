@@ -16,4 +16,8 @@ process_source = DataSourceProcessor(config["datasource"], random)
 train_sequence = process_source.get_training_set()
 test_sequence = process_source.get_test_set()
 
+x, _ = train_sequence[0]
+input_shape = x[0].shape
+
 # Loading model
+logger.info("Retrieving model")
