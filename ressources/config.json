@@ -1,5 +1,7 @@
 {
   "randomstate": 42,
+  "experiment_name": "first_triplet",
+  "results": "results",
 
   "datasource" : {
     "base_dir": "../embedding/single_img",
