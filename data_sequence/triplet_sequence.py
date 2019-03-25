@@ -3,10 +3,21 @@ import random
 import cv2
 import numpy as np
 from keras.utils import Sequence
+from loguru import logger
 
 
 class TripletSequence(Sequence):
     def __init__(self, df, batch_size, resize=None):
+
+        # Keeping only the sign with more than 5 examples
+        df["nbr_examples"] = df.apply(
+            lambda row: self._get_number_occurence(row, df), axis=1
+        )
+
+        logger.info("Dataframe before filtering : {}".format(len(df)))
+        df = df[df["nbr_examples"] > 5]
+        logger.info("Dataframe after filtering : {}".format(len(df)))
+
         self.data = df
 
         self.batch = batch_size
@@ -29,7 +40,7 @@ class TripletSequence(Sequence):
 
                 anchor_path = path
                 negative_path = self._get_negative(label)
-                positive_path = self._get_positive(label)
+                positive_path = self._get_positive(label, path)
 
                 anchor = self._load_images(anchor_path)
                 negative = self._load_images(negative_path)
@@ -43,8 +54,9 @@ class TripletSequence(Sequence):
 
         return np.array(triplets), np.ones(self.batch)
 
-    def _get_positive(self, label):
+    def _get_positive(self, label, already_taken):
         pos_data = self.data[self.data["label"] == label]
+        pos_data = pos_data[pos_data["path"] != already_taken]
 
         if len(pos_data) <= 1:
             raise ValueError
@@ -68,3 +80,7 @@ class TripletSequence(Sequence):
             img = cv2.resize(img, (0, 0), fx=fx, fy=fy)
 
         return img
+
+    def _get_number_occurence(self, row, df):
+        df = df[df["label"] == row["label"]]
+        return len(df)
