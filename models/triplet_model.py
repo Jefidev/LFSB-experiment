@@ -35,7 +35,7 @@ class TripletModel:
         )
 
         # compiling final model
-        model.compile(optimizer=Adam(), loss=triplet_loss)
+        model.compile(optimizer=Adam(), loss=triplet_loss_v2)
 
         return model
 
@@ -94,3 +94,14 @@ def triplet_loss(y_true, y_pred, N=1024, beta=1024, epsilon=1e-8):
     loss = neg_dist + pos_dist
 
     return loss
+
+
+def triplet_loss_v2(y_true, y_preds):
+    reshape_triplets_embeddings = tf.reshape(y_preds, [-1, 3, 1024])
+    an, pn, nn = tf.split(reshape_triplets_embeddings, 3, 1)
+    a = tf.reshape(an, [-1, 1024])
+    p = tf.reshape(pn, [-1, 1024])
+    n = tf.reshape(nn, [-1, 1024])
+    p_dist = K.sum(K.square(a - p), axis=-1)
+    n_dist = K.sum(K.square(a - n), axis=-1)
+    return K.sum(K.maximum(p_dist - n_dist + 0.2, 0), axis=0)
