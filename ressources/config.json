@@ -4,8 +4,8 @@
   "results": "results",
 
   "datasource" : {
-    "base_dir": "../embedding/single_img",
-    "labels": "../embedding/utils/label.csv",
+    "base_dir": "/home/ec2-user/ebs",
+    "labels": "/home/ec2-user/ebs/label.csv",
     "train_size": 0.8,
     "sequence_type": "triplet_images"
   }
