@@ -29,7 +29,7 @@ class TripletModel:
         merged = concatenate([anchor_embed, positive_embed, negative_embed], axis=-1)
 
         model = Model(
-            inputs=[anchor_embed, positive_embed, negative_embed],
+            inputs=[anchor_example, positive_example, negative_example],
             outputs=merged,
             name="triple_siamese",
         )
