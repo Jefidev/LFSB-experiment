@@ -56,8 +56,10 @@ class TripletSequence(Sequence):
                 i += 1
             except ValueError as e:
                 pass
+        X = [np.array(anch), np.array(pos), np.array(neg)]
+        y = np.ones(len(anch))
 
-        return np.array([anch, pos, neg]), np.ones(self.batch)
+        return X, y
 
     def _get_positive(self, label, already_taken):
         pos_data = self.data[self.data["label"] == label]

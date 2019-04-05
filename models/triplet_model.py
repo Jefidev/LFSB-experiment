@@ -1,6 +1,6 @@
 from keras import backend as K
 from keras.applications.inception_v3 import InceptionV3
-from keras.layers import Dense, GlobalAveragePooling2D, Input, Lambda
+from keras.layers import Dense, GlobalAveragePooling2D, Input, Lambda, concatenate
 from keras.models import Model
 from keras.optimizers import Adam
 
@@ -25,13 +25,11 @@ class TripletModel:
         anchor_embed = base_model(anchor_example)
 
         # Stacking output
-        stacked_dists = Lambda(
-            lambda vects: K.stack(vects, axis=1), name="stacked_dists"
-        )([positive_embed, negative_embed, anchor_embed])
+        merged = concatenate([positive_embed, negative_embed, anchor_embed], axis=-1)
 
         model = Model(
             [anchor_example, positive_example, negative_example],
-            stacked_dists,
+            outputs=merged,
             name="triple_siamese",
         )
 
