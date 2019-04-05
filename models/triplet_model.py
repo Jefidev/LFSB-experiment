@@ -29,13 +29,13 @@ class TripletModel:
         merged = concatenate([anchor_embed, positive_embed, negative_embed], axis=-1)
 
         model = Model(
-            inputs=[anchor_example, positive_example, negative_example],
+            [anchor_example, positive_example, negative_example],
             outputs=merged,
             name="triple_siamese",
         )
 
         # compiling final model
-        model.compile(optimizer=Adam(), loss=triplet_loss)
+        model.compile(optimizer=Adam(), loss=triplet_loss, metrics=[accuracy])
 
         return model
 
@@ -94,3 +94,12 @@ def triplet_loss(y_true, y_pred, N=1024, beta=1024, epsilon=1e-8):
     loss = neg_dist + pos_dist
 
     return loss
+
+
+def accuracy(y_true, y_pred):
+    return K.mean(y_pred[:, 0, 0] < y_pred[:, 1, 0])
+
+
+def euclidean_distance(vects):
+    x, y = vects
+    return K.sqrt(K.maximum(K.sum(K.square(x - y), axis=1, keepdims=True), K.epsilon()))
