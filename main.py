@@ -48,8 +48,8 @@ check = ModelCheckpoint(
 )
 
 t = train_sequence[0]
-logger.info("Train sequence shape : {}".format(t[0].shape))
-logger.info("First sequence shape : {}".format(t[0][0].shape))
+# logger.info("Train sequence shape : {}".format(t[0].shape))
+# logger.info("First sequence shape : {}".format(t[0][0].shape))
 
 model.fit_generator(train_sequence, epochs=100, callbacks=[early_stop, check])
 
