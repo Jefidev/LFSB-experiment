@@ -37,7 +37,7 @@ logger.info("Starting training")
 
 save_path = "{}/{}.h5".format(result_dir, name)
 
-early_stop = EarlyStopping(patience=3)
+early_stop = EarlyStopping(monitor="loss", patience=3)
 check = ModelCheckpoint(
     save_path,
     verbose=0,
@@ -45,6 +45,7 @@ check = ModelCheckpoint(
     save_weights_only=False,
     mode="auto",
     period=1,
+    monitor="loss",
 )
 
 t = train_sequence[0]
