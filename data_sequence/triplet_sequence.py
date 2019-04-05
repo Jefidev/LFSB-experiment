@@ -30,6 +30,9 @@ class TripletSequence(Sequence):
 
         i = 0
         triplets = []
+        pos = []
+        neg = []
+        anch = []
 
         while i < self.batch:
             try:
@@ -47,12 +50,15 @@ class TripletSequence(Sequence):
                 positive = self._load_images(positive_path)
 
                 triplets.append((anchor, positive, negative))
+                pos.append(positive)
+                neg.append(negative)
+                anch.append(anchor)
 
                 i += 1
             except ValueError as e:
                 pass
 
-        return np.array(triplets), np.ones(self.batch)
+        return np.array(anch, pos, neg), np.ones(self.batch)
 
     def _get_positive(self, label, already_taken):
         pos_data = self.data[self.data["label"] == label]
