@@ -49,7 +49,6 @@ class TripletSequence(Sequence):
                 negative = self._load_images(negative_path)
                 positive = self._load_images(positive_path)
 
-                triplets.append((anchor, positive, negative))
                 pos.append(positive)
                 neg.append(negative)
                 anch.append(anchor)
@@ -58,7 +57,11 @@ class TripletSequence(Sequence):
             except ValueError as e:
                 pass
 
-        return np.array(anch, pos, neg), np.ones(self.batch)
+        triplets.append(anch)
+        triplets.append(pos)
+        triplets.append(neg)
+
+        return np.array(triplets), np.ones(self.batch)
 
     def _get_positive(self, label, already_taken):
         pos_data = self.data[self.data["label"] == label]
