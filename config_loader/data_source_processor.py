@@ -47,8 +47,10 @@ class DataSourceProcessor:
 
     def _generate_test_train_sequences(self, train, test):
 
-        self.train_sequence = TripletSequence(train, 15)
-        self.test_sequence = ImageSequence(test["path"], test["label"], 15)
+        self.train_sequence = TripletSequence(train, 15, resize=(0.6, 0.6))
+        self.test_sequence = ImageSequence(
+            test["path"], test["label"], 15, resize=(0.6, 0.6)
+        )
 
     def _load_sign_dataframe(self, path):
         data = pd.read_csv(path)
