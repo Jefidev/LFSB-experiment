@@ -1,7 +1,7 @@
 import json
 
 from keras.callbacks import EarlyStopping, ModelCheckpoint
-from keras.models import load_model
+from keras.models import Model, load_model
 from loguru import logger
 
 from config_loader.data_source_processor import DataSourceProcessor
