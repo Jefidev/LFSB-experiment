@@ -8,5 +8,9 @@
     "labels": "/home/ec2-user/ebs/images/label.csv",
     "train_size": 0.8,
     "sequence_type": "triplet_images"
+  },
+  "load" : {
+    "model_file": "./results/first_triplet.h5",
+    "train": false
   }
 }

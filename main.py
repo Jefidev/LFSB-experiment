@@ -35,6 +35,8 @@ if load:
     model = load_model(
         load["model_file"], custom_objects={"triplet_loss_v2": triplet_loss_v2}
     )
+    model.summary()
+
 else:
     logger.info("Retrieving model")
     model = TripletModel(input_shape).get_model()
@@ -59,5 +61,18 @@ if load == None or load["train"]:
     model.fit_generator(train_sequence, epochs=100, callbacks=[early_stop, check])
     logger.info("Training complete")
 
-# embed_model = model.get_layer("base_model")
-# embed_model.summary()
+
+# Extracting the embedding network
+logger.info("Extractig embedding network from triplet network")
+
+embed_input = model.layers[3].get_input_at(-1)
+embed_output = model.layers[3].get_output_at(-1)
+
+embedding_model = Model(embed_input, embed_output)
+
+# Predict embedding for test
+preds = embedding_model.predict_generator(test_sequence)
+label = test_sequence.y
+
+preds.save("./results/preds.np")
+label.save("./results/label.np")
