@@ -1,6 +1,7 @@
 import json
 
 from keras.callbacks import EarlyStopping, ModelCheckpoint
+from keras.models import load_model
 from loguru import logger
 
 from config_loader.data_source_processor import DataSourceProcessor
@@ -14,6 +15,7 @@ with open("ressources/config.json", "r") as c:
 random = config["randomstate"]
 name = config["experiment_name"]
 result_dir = config["results"]
+load = config.get("load", None)
 
 
 # Defining test and train
@@ -28,33 +30,32 @@ input_shape = x[0][0].shape
 print(input_shape)
 
 # Loading model
-logger.info("Retrieving model")
-model = TripletModel(input_shape).get_model()
-model.summary()
+if load:
+    logger.info("Loading from file {}".format(load["model_file"]))
+    model = load_model(load["model_file"]))
+else:
+    logger.info("Retrieving model")
+    model = TripletModel(input_shape).get_model()
+    model.summary()
 
 # Train the model
-logger.info("Starting training")
+if load and load["train"]:
+    logger.info("Starting training")
 
-save_path = "{}/{}.h5".format(result_dir, name)
+    save_path = "{}/{}.h5".format(result_dir, name)
 
-early_stop = EarlyStopping(monitor="loss", patience=3)
-check = ModelCheckpoint(
-    save_path,
-    verbose=0,
-    save_best_only=True,
-    save_weights_only=False,
-    mode="auto",
-    period=1,
-    monitor="loss",
-)
-
-t = train_sequence[0]
-# logger.info("Train sequence shape : {}".format(t[0].shape))
-# logger.info("First sequence shape : {}".format(t[0][0].shape))
-
-model.fit_generator(train_sequence, epochs=100, callbacks=[early_stop, check])
-
-logger.info("Training complete")
+    early_stop = EarlyStopping(monitor="loss", patience=3)
+    check = ModelCheckpoint(
+        save_path,
+        verbose=0,
+        save_best_only=True,
+        save_weights_only=False,
+        mode="auto",
+        period=1,
+        monitor="loss",
+    )
+    model.fit_generator(train_sequence, epochs=100, callbacks=[early_stop, check])
+    logger.info("Training complete")
 
 # embed_model = model.get_layer("base_model")
 # embed_model.summary()
