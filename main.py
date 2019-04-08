@@ -41,7 +41,7 @@ else:
     model.summary()
 
 # Train the model
-if load and load["train"]:
+if load == None or load["train"]:
     logger.info("Starting training")
 
     save_path = "{}/{}.h5".format(result_dir, name)
