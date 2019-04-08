@@ -32,7 +32,7 @@ print(input_shape)
 # Loading model
 if load:
     logger.info("Loading from file {}".format(load["model_file"]))
-    model = load_model(load["model_file"]))
+    model = load_model(load["model_file"])
 else:
     logger.info("Retrieving model")
     model = TripletModel(input_shape).get_model()
