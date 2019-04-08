@@ -71,8 +71,12 @@ embed_output = model.layers[3].get_output_at(-1)
 embedding_model = Model(embed_input, embed_output)
 
 # Predict embedding for test
+logger.info("Start predict")
 preds = embedding_model.predict_generator(test_sequence)
 label = test_sequence.y
 
-preds.save("./results/preds.np")
-label.save("./results/label.np")
+logger.info("Saving preds")
+preds.dump("./results/preds.np")
+
+logger.info("Saving labels")
+label.dump("./results/label.np")
