@@ -5,7 +5,7 @@ from keras.models import load_model
 from loguru import logger
 
 from config_loader.data_source_processor import DataSourceProcessor
-from models.triplet_model import TripletModel
+from models.triplet_model import TripletModel, triplet_loss_v2
 
 logger.info("Loading config")
 
@@ -32,7 +32,9 @@ print(input_shape)
 # Loading model
 if load:
     logger.info("Loading from file {}".format(load["model_file"]))
-    model = load_model(load["model_file"])
+    model = load_model(
+        load["model_file"], custom_objects={"triplet_loss_v2": triplet_loss_v2}
+    )
 else:
     logger.info("Retrieving model")
     model = TripletModel(input_shape).get_model()

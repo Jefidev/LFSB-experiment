@@ -56,6 +56,9 @@ class TripletModel:
 
         return Model(embed.input, base_model, name="base_model")
 
+    def compile_model(self, model):
+        return model.compile(optimizer=Adam(), loss=triplet_loss_v2)
+
 
 def triplet_loss(y_true, y_pred, N=1024, beta=1024, epsilon=1e-8):
     """
