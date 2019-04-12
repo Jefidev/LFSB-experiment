@@ -6,6 +6,7 @@ import numpy as np
 import tensorflow as tf
 from keras import backend as K
 from keras.utils import Sequence
+from keras.models import Model
 from loguru import logger
 
 
@@ -26,12 +27,13 @@ class TripletSequence(Sequence):
         self.batch = batch_size
         self.resize = resize
         self.model = None
+        self.graph = tf.get_default_graph()
 
     def __len__(self):
         return int(np.ceil(len(self.data) / float(self.batch)))
 
     def __getitem__(self, idx):
-
+        logger.info("Starting to create batch")
         i = 0
         triplets = []
         pos = []
@@ -57,6 +59,7 @@ class TripletSequence(Sequence):
 
         X = [np.array(anch), np.array(pos), np.array(neg)]
         y = np.ones(len(anch))
+        logger.info("Batch created")        
 
         return X, y
 
@@ -120,15 +123,16 @@ class TripletSequence(Sequence):
         return anchors, positives, negatives
 
     def _get_semi_hard(self, ref, neg_list):
-
-        anch_pos_embed = self.model.predict(np.array(ref))
-        a = anch_pos_embed[0]
-        p = anch_pos_embed[1]
+        with self.graph.as_default():
+            anch_pos_embed = self.model.predict(np.array(ref))
+            a = anch_pos_embed[0]
+            p = anch_pos_embed[1]
 
         for i, neg in enumerate(neg_list):
             img = self._load_images(neg)
-
-            n = self.model.predict(img)[0]
+            
+            with self.graph.as_default():
+                n = self.model.predict(np.array([img]))[0]
 
             if self._is_semi_hard(a, p, n):
                 neg_list.pop(i)
@@ -139,13 +143,14 @@ class TripletSequence(Sequence):
         return img, neg_list
 
     def _is_semi_hard(self, a, p, n):
-        a = tf.reshape(a, [-1, 1024])
-        p = tf.reshape(p, [-1, 1024])
-        n = tf.reshape(n, [-1, 1024])
+        a = np.reshape(a, [-1, 1024])
+        p = np.reshape(p, [-1, 1024])
+        n = np.reshape(n, [-1, 1024])
+        
+        p_dist = np.sum(np.square(np.subtract(a, p)))
+        n_dist = np.sum(np.square(np.subtract(a, n)))
 
-        p_dist = K.sum(K.square(a - p), axis=-1)
-        n_dist = K.sum(K.square(a - n), axis=-1)
-        return K.sum(K.maximum(p_dist - n_dist + 0.2, 0), axis=0) > 0
+        return p_dist - (n_dist + 0.2) > 0
 
 
 def update_model(seq, model):
@@ -155,3 +160,4 @@ def update_model(seq, model):
     embedding_model = Model(embed_input, embed_output)
 
     seq.set_model(embedding_model)
+    logger.info("Model updated")
