@@ -1,7 +1,8 @@
 import tensorflow as tf
 from keras import backend as K
 from keras.applications.inception_v3 import InceptionV3
-from keras.layers import Dense, GlobalAveragePooling2D, Input, Lambda, concatenate
+from keras.layers import (Dense, GlobalAveragePooling2D, Input, Lambda,
+                          concatenate)
 from keras.models import Model
 from keras.optimizers import Adam
 
@@ -57,49 +58,12 @@ class TripletModel:
         return Model(embed.input, base_model, name="base_model")
 
     def compile_model(self, model):
-        return model.compile(optimizer=Adam(), loss=triplet_loss_v2)
-
-
-def triplet_loss(y_true, y_pred, N=1024, beta=1024, epsilon=1e-8):
-    """
-    Implementation of the triplet loss function
-    
-    Arguments:
-    y_true -- true labels, required when you define a loss in Keras, you don't need it in this function.
-    y_pred -- python list containing three objects:
-            anchor -- the encodings for the anchor data
-            positive -- the encodings for the positive data (similar to anchor)
-            negative -- the encodings for the negative data (different from anchor)
-    N  --  The number of dimension 
-    beta -- The scaling factor, N is recommended
-    epsilon -- The Epsilon value to prevent ln(0)
-    
-    
-    Returns:
-    loss -- real number, value of the loss
-    """
-    anchor = tf.convert_to_tensor(y_pred[:, 0:N])
-    positive = tf.convert_to_tensor(y_pred[:, N : N * 2])
-    negative = tf.convert_to_tensor(y_pred[:, N * 2 : N * 3])
-
-    # distance between the anchor and the positive
-    pos_dist = tf.reduce_sum(tf.square(tf.subtract(anchor, positive)), 1)
-    # distance between the anchor and the negative
-    neg_dist = tf.reduce_sum(tf.square(tf.subtract(anchor, negative)), 1)
-
-    # Non Linear Values
-
-    # -ln(-x/N+1)
-    pos_dist = -tf.log(-tf.divide((pos_dist), beta) + 1 + epsilon)
-    neg_dist = -tf.log(-tf.divide((N - neg_dist), beta) + 1 + epsilon)
-
-    # compute loss
-    loss = neg_dist + pos_dist
-
-    return loss
+        return model.compile(optimizer=Adam(), loss=triplet_loss_v
 
 
 def triplet_loss_v2(y_true, y_preds):
+    # Alpha = 0.2
+
     reshape_triplets_embeddings = tf.reshape(y_preds, [-1, 3, 1024])
     an, pn, nn = tf.split(reshape_triplets_embeddings, 3, 1)
     a = tf.reshape(an, [-1, 1024])

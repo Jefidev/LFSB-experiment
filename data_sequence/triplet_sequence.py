@@ -1,7 +1,10 @@
 import random
+from random import shuffle
 
 import cv2
 import numpy as np
+import tensorflow as tf
+from keras import backend as K
 from keras.utils import Sequence
 from loguru import logger
 
@@ -22,6 +25,7 @@ class TripletSequence(Sequence):
 
         self.batch = batch_size
         self.resize = resize
+        self.model = None
 
     def __len__(self):
         return int(np.ceil(len(self.data) / float(self.batch)))
@@ -35,47 +39,41 @@ class TripletSequence(Sequence):
         anch = []
 
         while i < self.batch:
-            try:
-                choosen = self.data.sample(1)
+            # sampling random label
+            choosen = self.data.sample(1)
+            label = choosen["label"].tolist()[0]
 
-                path = choosen["path"].tolist()[0]
-                label = choosen["label"].tolist()[0]
+            # Get duet for this label
+            duets = self._construct_duet(label, self.batch - i)
 
-                anchor_path = path
-                negative_path = self._get_negative(label)
-                positive_path = self._get_positive(label, path)
+            # Get semi hard negative
+            anchor, posi, nega = self._construct_triplet(duets, label)
 
-                anchor = self._load_images(anchor_path)
-                negative = self._load_images(negative_path)
-                positive = self._load_images(positive_path)
+            anch += anchor
+            pos += posi
+            neg += nega
 
-                pos.append(positive)
-                neg.append(negative)
-                anch.append(anchor)
+            i += len(anch)
 
-                i += 1
-            except ValueError as e:
-                pass
         X = [np.array(anch), np.array(pos), np.array(neg)]
         y = np.ones(len(anch))
 
         return X, y
 
-    def _get_positive(self, label, already_taken):
-        pos_data = self.data[self.data["label"] == label]
-        pos_data = pos_data[pos_data["path"] != already_taken]
+    def _construct_duet(self, label, remaining):
+        duet_list = []
+        label_data = self.data[self.data["label"] == label]
 
-        if len(pos_data) <= 1:
-            raise ValueError
+        paths = label_data["path"].tolist()
+        shuffle(paths)
 
-        pos_list = pos_data["path"].tolist()
-        return random.choice(pos_list)
+        while len(paths) >= 2:
+            a = paths.pop()
+            p = paths.pop()
 
-    def _get_negative(self, label):
-        neg_data = self.data[self.data["label"] != label]
-        neg_list = neg_data["path"].tolist()
+            duet_list.append((a, p))
 
-        return random.choice(neg_list)
+        return duet_list[:remaining]
 
     def _load_images(self, img):
         img = cv2.imread(img) / 255
@@ -91,3 +89,60 @@ class TripletSequence(Sequence):
     def _get_number_occurence(self, row, df):
         df = df[df["label"] == row["label"]]
         return len(df)
+
+    def set_model(self, model):
+        self.model = model
+
+    def _construct_triplet(self, duets, label):
+
+        anchors = []
+        positives = []
+        negatives = []
+
+        neg_data = self.data[self.data["label"] != label]
+        neg_list = neg_data["path"].tolist()
+        shuffle(neg_list)
+
+        for elem in duets:
+
+            img_a = self._load_images(elem[0])
+            anchors.append(img_a)
+
+            img_p = self._load_images(elem[1])
+            positives.append(img_p)
+
+            if self.model:
+                neg, neg_list = self._get_semi_hard([img_a, img_p], neg_list)
+                negatives.append(neg)
+            else:
+                negatives.append(self._load_images(neg_list.pop()))
+
+        return anchors, positives, negatives
+
+    def _get_semi_hard(self, ref, neg_list):
+
+        anch_pos_embed = self.model.predict(np.array(ref))
+        a = anch_pos_embed[0]
+        p = anch_pos_embed[1]
+
+        for i, neg in enumerate(neg_list):
+            img = self._load_images(neg)
+
+            n = self.model.predict(img)[0]
+
+            if self._is_semi_hard(a, p, n):
+                neg_list.pop(i)
+                return img, neg_list
+
+        logger.info("No semi hard examples found")
+        img = self._load_images(neg_list.pop())
+        return img, neg_list
+
+    self _is_semi_hard(self, a, p, n):
+        a = tf.reshape(a, [-1, 1024])
+        p = tf.reshape(p, [-1, 1024])
+        n = tf.reshape(n, [-1, 1024])
+
+        p_dist = K.sum(K.square(a - p), axis=-1)
+        n_dist = K.sum(K.square(a - n), axis=-1)
+        return K.sum(K.maximum(p_dist - n_dist + 0.2, 0), axis=0) > 0
