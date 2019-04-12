@@ -1,8 +1,7 @@
 import tensorflow as tf
 from keras import backend as K
 from keras.applications.inception_v3 import InceptionV3
-from keras.layers import (Dense, GlobalAveragePooling2D, Input, Lambda,
-                          concatenate)
+from keras.layers import Dense, GlobalAveragePooling2D, Input, Lambda, concatenate
 from keras.models import Model
 from keras.optimizers import Adam
 
@@ -58,7 +57,7 @@ class TripletModel:
         return Model(embed.input, base_model, name="base_model")
 
     def compile_model(self, model):
-        return model.compile(optimizer=Adam(), loss=triplet_loss_v
+        return model.compile(optimizer=Adam(), loss=triplet_loss_v2)
 
 
 def triplet_loss_v2(y_true, y_preds):
