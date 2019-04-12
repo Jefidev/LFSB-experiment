@@ -1,6 +1,6 @@
 {
   "randomstate": 42,
-  "experiment_name": "first_triplet",
+  "experiment_name": "smart_triplet",
   "results": "results",
 
   "datasource" : {
@@ -9,8 +9,4 @@
     "train_size": 0.8,
     "sequence_type": "triplet_images"
   },
-  "load" : {
-    "model_file": "./results/first_triplet.h5",
-    "train": false
-  }
 }
