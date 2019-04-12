@@ -7,6 +7,7 @@ from loguru import logger
 from config_loader.data_source_processor import DataSourceProcessor
 from data_sequence.triplet_sequence import update_model
 from models.triplet_model import TripletModel, triplet_loss_v2
+from utils.customCallback import ModelUpdater
 
 logger.info("Loading config")
 
@@ -60,10 +61,13 @@ if load == None or load["train"]:
         monitor="loss",
     )
 
-    lcallback = LambdaCallback(on_batch_end=update_model(train_sequence, model))
+    model_switcher = ModelUpdater(model, train_sequence)
 
     model.fit_generator(
-        train_sequence, epochs=100, callbacks=[early_stop, check, lcallback], steps_per_epoch=400
+        train_sequence,
+        epochs=100,
+        callbacks=[early_stop, check, model_switcher],
+        steps_per_epoch=400,
     )
     logger.info("Training complete")
 
