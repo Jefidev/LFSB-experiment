@@ -138,7 +138,7 @@ class TripletSequence(Sequence):
         img = self._load_images(neg_list.pop())
         return img, neg_list
 
-    self _is_semi_hard(self, a, p, n):
+    def _is_semi_hard(self, a, p, n):
         a = tf.reshape(a, [-1, 1024])
         p = tf.reshape(p, [-1, 1024])
         n = tf.reshape(n, [-1, 1024])
@@ -153,6 +153,5 @@ def update_model(seq, model):
     embed_output = model.layers[3].get_output_at(-1)
 
     embedding_model = Model(embed_input, embed_output)
-
 
     seq.set_model(embedding_model)
