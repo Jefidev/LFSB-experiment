@@ -60,10 +60,10 @@ if load == None or load["train"]:
         monitor="loss",
     )
 
-    lcallback = LambdaCallback(on_epoch_end=update_model(train_sequence, model))
+    lcallback = LambdaCallback(on_batch_end=update_model(train_sequence, model))
 
     model.fit_generator(
-        train_sequence, epochs=100, callbacks=[early_stop, check, lcallback]
+        train_sequence, epochs=100, callbacks=[early_stop, check, lcallback], steps_per_epoch=400
     )
     logger.info("Training complete")
 
