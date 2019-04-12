@@ -103,6 +103,7 @@ class TripletSequence(Sequence):
         negatives = []
 
         neg_data = self.data[self.data["label"] != label]
+        neg_data = neg_data.sample(100)
         neg_list = neg_data["path"].tolist()
         shuffle(neg_list)
 
