@@ -146,3 +146,13 @@ class TripletSequence(Sequence):
         p_dist = K.sum(K.square(a - p), axis=-1)
         n_dist = K.sum(K.square(a - n), axis=-1)
         return K.sum(K.maximum(p_dist - n_dist + 0.2, 0), axis=0) > 0
+
+
+def update_model(seq, model):
+    embed_input = model.layers[3].get_input_at(-1)
+    embed_output = model.layers[3].get_output_at(-1)
+
+    embedding_model = Model(embed_input, embed_output)
+
+
+    seq.set_model(embedding_model)

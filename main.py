@@ -1,10 +1,11 @@
 import json
 
-from keras.callbacks import EarlyStopping, ModelCheckpoint
+from keras.callbacks import EarlyStopping, LambdaCallback, ModelCheckpoint
 from keras.models import Model, load_model
 from loguru import logger
 
 from config_loader.data_source_processor import DataSourceProcessor
+from data_sequence.triplet_sequence import update_model
 from models.triplet_model import TripletModel, triplet_loss_v2
 
 logger.info("Loading config")
@@ -58,7 +59,12 @@ if load == None or load["train"]:
         period=1,
         monitor="loss",
     )
-    model.fit_generator(train_sequence, epochs=100, callbacks=[early_stop, check])
+
+    lcallback = LambdaCallback(on_batch_end=update_model(train_sequence, model))
+
+    model.fit_generator(
+        train_sequence, epochs=100, callbacks=[early_stop, check, lcallback]
+    )
     logger.info("Training complete")
 
 
