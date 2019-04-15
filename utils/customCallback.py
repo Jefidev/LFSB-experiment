@@ -1,13 +1,15 @@
 from keras.callbacks import Callback
 from keras.models import Model
 
+from loguru import logger
+
 
 class ModelUpdater(Callback):
     def __init__(self, model, train_seq):
         self.model = model
         self.train_sequence = train_seq
 
-        super.__init__()
+        super().__init__()
 
     def on_batch_end(self, batch, logs={}):
         embed_input = self.model.layers[3].get_input_at(-1)
