@@ -5,8 +5,8 @@ import cv2
 import numpy as np
 import tensorflow as tf
 from keras import backend as K
-from keras.utils import Sequence
 from keras.models import Model
+from keras.utils import Sequence
 from loguru import logger
 
 
@@ -23,6 +23,7 @@ class TripletSequence(Sequence):
         logger.info("Dataframe after filtering : {}".format(len(df)))
 
         self.data = df
+        self.training_subset = self.data
 
         self.batch = batch_size
         self.resize = resize
@@ -31,6 +32,9 @@ class TripletSequence(Sequence):
 
     def __len__(self):
         return int(np.ceil(len(self.data) / float(self.batch)))
+
+    def reset_data(self):
+        self.training_subset = self.data
 
     def __getitem__(self, idx):
         logger.info("Starting to create batch")
@@ -42,7 +46,7 @@ class TripletSequence(Sequence):
 
         while i < self.batch:
             # sampling random label
-            choosen = self.data.sample(1)
+            choosen = self.training_subset.sample(1)
             label = choosen["label"].tolist()[0]
 
             # Get duet for this label
@@ -55,11 +59,16 @@ class TripletSequence(Sequence):
             pos += posi
             neg += nega
 
+            to_remove = list(sum(duets, ()))
+            self.training_subset = self.training_subset[
+                ~self.training_subset["path"].isin(to_remove)
+            ]
+
             i += len(anch)
 
         X = [np.array(anch), np.array(pos), np.array(neg)]
         y = np.ones(len(anch))
-        logger.info("Batch created")        
+        logger.info("Batch created")
 
         return X, y
 
@@ -131,7 +140,7 @@ class TripletSequence(Sequence):
 
         for i, neg in enumerate(neg_list):
             img = self._load_images(neg)
-            
+
             with self.graph.as_default():
                 n = self.model.predict(np.array([img]))[0]
 
@@ -147,7 +156,7 @@ class TripletSequence(Sequence):
         a = np.reshape(a, [-1, 1024])
         p = np.reshape(p, [-1, 1024])
         n = np.reshape(n, [-1, 1024])
-        
+
         p_dist = np.sum(np.square(np.subtract(a, p)))
         n_dist = np.sum(np.square(np.subtract(a, n)))
 
