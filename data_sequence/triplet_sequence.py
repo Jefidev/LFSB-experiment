@@ -165,10 +165,11 @@ class TripletSequence(Sequence):
 
             if self._is_semi_hard(a, p, n):
                 neg_list.pop(i)
+                img = self._load_images(neg["path"])
                 return img, neg_list
 
         logger.info("No semi hard examples found")
-        img = self._load_images(neg_list.pop())
+        img = self._load_images(neg_list.pop()["path"])
         return img, neg_list
 
     def _is_semi_hard(self, a, p, n):
