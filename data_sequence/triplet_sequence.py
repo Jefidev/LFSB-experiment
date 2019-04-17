@@ -155,12 +155,11 @@ class TripletSequence(Sequence):
             p = anch_pos_embed[1]
 
         for i, neg in enumerate(neg_list):
-            img = self._load_images(neg)
-
             n = neg.get("embedding")
 
             if not n:
                 with self.graph.as_default():
+                    img = self._load_images(neg["path"])
                     n = self.model.predict(np.array([img]))[0]
                     neg["embedding"] = n
 
