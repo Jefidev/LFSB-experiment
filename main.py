@@ -67,7 +67,7 @@ if load == None or load["train"]:
         train_sequence,
         epochs=100,
         callbacks=[early_stop, check, model_switcher],
-        steps_per_epoch=400,
+        steps_per_epoch=200,
     )
     logger.info("Training complete")
 

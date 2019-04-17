@@ -1,6 +1,6 @@
 {
   "randomstate": 42,
-  "experiment_name": "smart_triplet",
+  "experiment_name": "smarter_triplet",
   "results": "results",
 
   "datasource" : {
