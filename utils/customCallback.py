@@ -19,3 +19,6 @@ class ModelUpdater(Callback):
 
         self.train_sequence.set_model(embedding_model)
         logger.info("Model updated")
+
+    def on_epoch_end(self, batch, logs={}):
+        self.train_sequence.reset_data()
