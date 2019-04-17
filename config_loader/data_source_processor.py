@@ -56,5 +56,5 @@ class DataSourceProcessor:
         data = pd.read_csv(path)
 
         # Filtering descriptive sign + undefined signs
-        data = data[~data["label"].isin(["DS", "INDECIPHERABLE"])]
+        data = data[~data["label"].isin(["DS", "INDECIPHERABLE", "LS", "PALM-UP"])]
         return data

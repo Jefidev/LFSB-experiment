@@ -11,6 +11,11 @@ from loguru import logger
 
 
 class TripletSequence(Sequence):
+    """
+    Load the data for each batch. This class will construct the best triplets
+    in order to train the model.
+    """
+
     def __init__(self, df, batch_size, resize=None):
 
         # Keeping only the sign with more than 5 examples
@@ -37,6 +42,9 @@ class TripletSequence(Sequence):
         self.training_subset = self.data
 
     def __getitem__(self, idx):
+        """
+        Construct and return the triplets needed for the next batch
+        """
         logger.info("Starting to create batch")
         i = 0
         triplets = []
@@ -73,6 +81,10 @@ class TripletSequence(Sequence):
         return X, y
 
     def _construct_duet(self, label, remaining):
+        """
+        Create duet based on a label. 
+        The duet are constructed by combining all the image with the same label.
+        """
         duet_list = []
         label_data = self.data[self.data["label"] == label]
 
@@ -112,9 +124,10 @@ class TripletSequence(Sequence):
         negatives = []
 
         neg_data = self.data[self.data["label"] != label]
-        neg_data = neg_data.sample(200)
+        neg_data = neg_data.sample(400)
         neg_list = neg_data["path"].tolist()
         shuffle(neg_list)
+        neg_list = [{"path": i} for i in neg_list]
 
         for elem in duets:
 
@@ -128,11 +141,14 @@ class TripletSequence(Sequence):
                 neg, neg_list = self._get_semi_hard([img_a, img_p], neg_list)
                 negatives.append(neg)
             else:
-                negatives.append(self._load_images(neg_list.pop()))
+                negatives.append(self._load_images(neg_list.pop()["path"]))
 
         return anchors, positives, negatives
 
     def _get_semi_hard(self, ref, neg_list):
+        """
+        Searching for a semi hard negative for the given duet
+        """
         with self.graph.as_default():
             anch_pos_embed = self.model.predict(np.array(ref))
             a = anch_pos_embed[0]
@@ -141,8 +157,12 @@ class TripletSequence(Sequence):
         for i, neg in enumerate(neg_list):
             img = self._load_images(neg)
 
-            with self.graph.as_default():
-                n = self.model.predict(np.array([img]))[0]
+            n = neg.get("embedding")
+
+            if not n:
+                with self.graph.as_default():
+                    n = self.model.predict(np.array([img]))[0]
+                    neg["embedding"] = n
 
             if self._is_semi_hard(a, p, n):
                 neg_list.pop(i)
@@ -161,14 +181,3 @@ class TripletSequence(Sequence):
         n_dist = np.sum(np.square(np.subtract(a, n)))
 
         return p_dist - (n_dist + 0.2) > 0
-
-
-def update_model(seq, model):
-    logger.info("model update")
-    embed_input = model.layers[3].get_input_at(-1)
-    embed_output = model.layers[3].get_output_at(-1)
-
-    embedding_model = Model(embed_input, embed_output)
-
-    seq.set_model(embedding_model)
-    logger.info("Model updated")
