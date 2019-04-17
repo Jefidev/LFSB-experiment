@@ -157,7 +157,7 @@ class TripletSequence(Sequence):
         for i, neg in enumerate(neg_list):
             n = neg.get("embedding")
 
-            if not n:
+            if n is None:
                 with self.graph.as_default():
                     img = self._load_images(neg["path"])
                     n = self.model.predict(np.array([img]))[0]
@@ -172,10 +172,10 @@ class TripletSequence(Sequence):
         img = self._load_images(neg_list.pop()["path"])
         return img, neg_list
 
-    def _is_semi_hard(self, a, p, n):
+    def _is_semi_hard(self, a, p, neg):
         a = np.reshape(a, [-1, 1024])
         p = np.reshape(p, [-1, 1024])
-        n = np.reshape(n, [-1, 1024])
+        n = np.reshape(neg, [-1, 1024])
 
         p_dist = np.sum(np.square(np.subtract(a, p)))
         n_dist = np.sum(np.square(np.subtract(a, n)))
