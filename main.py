@@ -5,7 +5,6 @@ from keras.models import Model, load_model
 from loguru import logger
 
 from config_loader.data_source_processor import DataSourceProcessor
-from data_sequence.triplet_sequence import update_model
 from models.triplet_model import TripletModel, triplet_loss_v2
 from utils.customCallback import ModelUpdater
 
