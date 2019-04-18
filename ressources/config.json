@@ -1,6 +1,6 @@
 {
   "randomstate": 42,
-  "experiment_name": "smarter_triplet",
+  "experiment_name": "softmax_triplet",
   "results": "results",
 
   "datasource" : {
@@ -10,7 +10,7 @@
     "sequence_type": "triplet_images"
   },
   "load":{
-	"model_file":"results/smarter_triplet.h5",
+	"model_file":"./results/softmax_triplet.h5",
 	"train": false
   }
 }

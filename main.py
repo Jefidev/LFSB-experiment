@@ -84,7 +84,7 @@ logger.info("Start predict")
 preds = embedding_model.predict_generator(test_sequence)
 label = test_sequence.y.as_matrix()
 
-logger.info("Saving preds")
+logger.info("Saving preds max {}".format(preds.max()))
 preds.dump("./results/preds.np")
 
 logger.info("Saving labels")
