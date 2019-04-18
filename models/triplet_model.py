@@ -70,4 +70,4 @@ def triplet_loss_v2(y_true, y_preds):
     n = tf.reshape(nn, [-1, 256])
     p_dist = K.sum(K.square(a - p), axis=-1)
     n_dist = K.sum(K.square(a - n), axis=-1)
-    return K.sum(K.maximum(p_dist - n_dist + 0.2, 0), axis=0)
+    return K.sum(K.maximum(p_dist - n_dist + 0.3, 0), axis=0)

@@ -173,11 +173,11 @@ class TripletSequence(Sequence):
         return img, neg_list
 
     def _is_semi_hard(self, a, p, neg):
-        a = np.reshape(a, [-1, 1024])
-        p = np.reshape(p, [-1, 1024])
-        n = np.reshape(neg, [-1, 1024])
+        a = np.reshape(a, [-1, 256])
+        p = np.reshape(p, [-1, 256])
+        n = np.reshape(neg, [-1, 256])
 
         p_dist = np.sum(np.square(np.subtract(a, p)))
         n_dist = np.sum(np.square(np.subtract(a, n)))
 
-        return p_dist - (n_dist + 0.2) > 0
+        return p_dist - (n_dist + 0.3) > 0
