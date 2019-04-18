@@ -177,7 +177,10 @@ class TripletSequence(Sequence):
         p = np.reshape(p, [-1, 256])
         n = np.reshape(neg, [-1, 256])
 
+        if (a == n).all():
+            logger.info("Model is collapsing")
+
         p_dist = np.sum(np.square(np.subtract(a, p)))
         n_dist = np.sum(np.square(np.subtract(a, n)))
 
-        return p_dist - (n_dist + 0.3) > 0
+        return p_dist - (n_dist + 0.2) > 0
