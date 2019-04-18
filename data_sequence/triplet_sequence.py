@@ -173,9 +173,9 @@ class TripletSequence(Sequence):
         return img, neg_list
 
     def _is_semi_hard(self, a, p, neg):
-        a = np.reshape(a, [-1, 256])
-        p = np.reshape(p, [-1, 256])
-        n = np.reshape(neg, [-1, 256])
+        a = np.reshape(a, [-1, 128])
+        p = np.reshape(p, [-1, 128])
+        n = np.reshape(neg, [-1, 128])
 
         if (a == n).all():
             logger.info("Model is collapsing")
@@ -183,4 +183,4 @@ class TripletSequence(Sequence):
         p_dist = np.sum(np.square(np.subtract(a, p)))
         n_dist = np.sum(np.square(np.subtract(a, n)))
 
-        return p_dist - (n_dist + 0.2) > 0
+        return p_dist - (n_dist + 0.25) > 0
