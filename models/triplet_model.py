@@ -51,9 +51,9 @@ class TripletModel:
 
         x = embed.output
         x = GlobalAveragePooling2D()(x)
-        x = Dense(2048, activation="relu", kernel_regularizer = regularizers.l2(0.01), activity_regularizer = regularizer.l2(0.01))(x)
+        x = Dense(2048, activation="relu", kernel_regularizer = regularizers.l2(0.01), activity_regularizer = regularizers.l2(0.01))(x)
         x = Dense(1024, activation="relu")(x)
-        base_model = Dense(128, activation="softmax", kernel_regularizer = regularizers.l2(0.01), activity_regularizer = regularizer.l2(0.01))(x)
+        base_model = Dense(128, activation="softmax", kernel_regularizer = regularizers.l2(0.01), activity_regularizer = regularizers.l2(0.01))(x)
 
         return Model(embed.input, base_model, name="base_model")
 
