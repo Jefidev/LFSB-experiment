@@ -1,6 +1,6 @@
 {
   "randomstate": 42,
-  "experiment_name": "softmax_triplet",
+  "experiment_name": "expe3",
   "results": "results",
 
   "datasource" : {
@@ -8,9 +8,5 @@
     "labels": "/home/ec2-user/ebs/images/label.csv",
     "train_size": 0.8,
     "sequence_type": "triplet_images"
-  },
-  "load":{
-	"model_file":"./results/softmax_triplet.h5",
-	"train": false
   }
 }
