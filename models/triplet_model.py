@@ -52,7 +52,7 @@ class TripletModel:
         x = GlobalAveragePooling2D()(x)
         x = Dense(2048, activation="relu")(x)
         x = Dense(2048, activation="relu")(x)
-        base_model = Dense(1024, activation="relu")(x)
+        base_model = Dense(1024, activation="softmax")(x)
 
         return Model(embed.input, base_model, name="base_model")
 
