@@ -124,7 +124,7 @@ class TripletSequence(Sequence):
         negatives = []
 
         neg_data = self.data[self.data["label"] != label]
-        neg_data = neg_data.sample(600)
+        neg_data = neg_data.sample(500)
         neg_list = neg_data["path"].tolist()
         shuffle(neg_list)
         neg_list = [{"path": i} for i in neg_list]
@@ -183,4 +183,4 @@ class TripletSequence(Sequence):
         p_dist = np.sum(np.square(np.subtract(a, p)))
         n_dist = np.sum(np.square(np.subtract(a, n)))
 
-        return p_dist - (n_dist + 0.25) > 0
+        return (p_dist - n_dist) + 0.5 > 0
