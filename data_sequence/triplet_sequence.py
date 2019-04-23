@@ -183,4 +183,4 @@ class TripletSequence(Sequence):
         p_dist = np.sum(np.square(np.subtract(a, p)))
         n_dist = np.sum(np.square(np.subtract(a, n)))
 
-        return (p_dist - n_dist) + 0.2 > 0
+        return (p_dist - n_dist) + 0.5 > 0

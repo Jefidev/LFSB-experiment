@@ -2,7 +2,8 @@ import tensorflow as tf
 from keras import backend as K
 from keras import regularizers
 from keras.applications.inception_v3 import InceptionV3
-from keras.layers import Dense, GlobalAveragePooling2D, Input, Lambda, concatenate
+from keras.layers import (Dense, GlobalAveragePooling2D, Input, Lambda,
+                          concatenate)
 from keras.models import Model
 from keras.optimizers import Adam
 
@@ -51,6 +52,7 @@ class TripletModel:
 
         x = embed.output
         x = GlobalAveragePooling2D()(x)
+
         x = Dense(
             2048,
             activation="relu",
@@ -81,5 +83,4 @@ def triplet_loss_v2(y_true, y_preds):
     n = tf.reshape(nn, [-1, 128])
     p_dist = K.sum(K.square(a - p), axis=-1)
     n_dist = K.sum(K.square(a - n), axis=-1)
-
-    return K.sum(K.maximum(p_dist - n_dist + 0.2, 0), axis=0)
+    return K.sum(K.maximum(p_dist - n_dist + 0.5, 0), axis=0)
