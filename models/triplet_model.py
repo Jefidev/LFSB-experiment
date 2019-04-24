@@ -2,8 +2,7 @@ import tensorflow as tf
 from keras import backend as K
 from keras import regularizers
 from keras.applications.inception_v3 import InceptionV3
-from keras.layers import (Dense, GlobalAveragePooling2D, Input, Lambda,
-                          concatenate)
+from keras.layers import Dense, GlobalAveragePooling2D, Input, Lambda, concatenate
 from keras.models import Model
 from keras.optimizers import Adam
 
@@ -62,7 +61,7 @@ class TripletModel:
         x = Dense(1024, activation="relu")(x)
         base_model = Dense(
             128,
-            activation="relu",
+            activation="linear",
             kernel_regularizer=regularizers.l2(0.01),
             activity_regularizer=regularizers.l2(0.01),
         )(x)
