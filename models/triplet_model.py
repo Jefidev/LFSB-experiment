@@ -60,7 +60,7 @@ class TripletModel:
         x = Dense(1024, activation="relu")(x)
         base_model = Dense(
             128,
-            activation="softmax",
+            activation="relu",
             kernel_regularizer=regularizers.l2(0.01),
             activity_regularizer=regularizers.l2(0.01),
         )(x)
@@ -82,4 +82,4 @@ def triplet_loss_v2(y_true, y_preds):
     p_dist = K.sum(K.square(a - p), axis=-1)
     n_dist = K.sum(K.square(a - n), axis=-1)
 
-    return K.sum(K.maximum(p_dist - n_dist + 0.5, 0), axis=0)
+    return K.sum(K.maximum(p_dist - n_dist + 0.2, 0), axis=0)
