@@ -48,8 +48,7 @@ if load == None or load["train"]:
     logger.info("Starting training")
 
     save_path = "{}/{}.h5".format(result_dir, name)
-
-    early_stop = EarlyStopping(monitor="loss", patience=3)
+    early_stop = EarlyStopping(monitor="loss", patience=20)
     check = ModelCheckpoint(
         save_path,
         verbose=0,
