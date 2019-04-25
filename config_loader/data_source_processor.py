@@ -57,4 +57,10 @@ class DataSourceProcessor:
 
         # Filtering descriptive sign + undefined signs
         data = data[~data["label"].isin(["DS", "INDECIPHERABLE", "LS", "PALM-UP"])]
+
+        # Get label having more than 300 occurances
+        data["count"] = data.apply(
+            lambda row: len(data[data["label"] == row["label"]]), axis=1
+        )
+        data = data[data["count"] > 200]
         return data
