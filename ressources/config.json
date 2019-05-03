@@ -1,7 +1,6 @@
 {
   "randomstate": 42,
   "experiment_name": "linear",
-  "results": "results",
 
   "datasource" : {
     "base_dir": "/home/ec2-user/ebs/images",
@@ -9,8 +8,32 @@
     "train_size": 0.8,
     "sequence_type": "triplet_images"
   },
-  "load":{
-    "model_file":"./results/linear.h5",
-    "train": true
+  "data_processing":{
+    "base_dir": "/home/ec2-user/ebs/images",
+    "processing_name": "one_image_cut",
+    "output_dir": "/home/ec2-user/ebs/images",
+    "classpath": "toto.toto"
+  },
+  "train_test_gen":{
+    "train_split": 0.8,
+    "data_directory": "/home/ec2-user/ebs/images",
+    "labels": "/home/ec2-user/ebs/images/label.csv",
+    "test_classpath": "toto.toto",
+    "train_classpath": "titi.tata"
+  },
+  "model":{
+    "classpath":"",
+    "epoch":"",
+    "batch_size":"",
+    "model_name":"toto"
+  },
+  "testing":{
+    "model_name":"",
+    "classpath":""
+  },
+  "result_analysis":{
+    "results_path":"",
+    "class_path":""
   }
+
 }
