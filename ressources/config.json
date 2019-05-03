@@ -2,38 +2,30 @@
   "randomstate": 42,
   "experiment_name": "linear",
 
-  "datasource" : {
-    "base_dir": "/home/ec2-user/ebs/images",
-    "labels": "/home/ec2-user/ebs/images/label.csv",
-    "train_size": 0.8,
-    "sequence_type": "triplet_images"
-  },
   "data_processing":{
-    "base_dir": "/home/ec2-user/ebs/images",
-    "processing_name": "one_image_cut",
-    "output_dir": "/home/ec2-user/ebs/images",
-    "classpath": "toto.toto"
+    "input_dir": "./experiments/linear",
+    "output_dir": "./experiments/linear/processed",
+    "classpath": "preprocessing.base_preprocessing.BasePreprocessing"
   },
-  "train_test_gen":{
+  "train_test_split":{
     "train_split": 0.8,
-    "data_directory": "/home/ec2-user/ebs/images",
-    "labels": "/home/ec2-user/ebs/images/label.csv",
-    "test_classpath": "toto.toto",
-    "train_classpath": "titi.tata"
+    "data_directory": "./experiments/linear/processed",
+    "splitter_class": "train_test_split.base_splitter.BaseSplitter",
+    "test_classpath": "data_sequence.image_sequence.ImageSequence",
+    "train_classpath": "data_sequence.image_sequence.ImageSequence"
   },
   "model":{
-    "classpath":"",
-    "epoch":"",
-    "batch_size":"",
-    "model_name":"toto"
+    "classpath":"models.base_model.BaseModel",
+    "epoch": 20,
+    "batch_size": 30,
+    "model_name":"dummy",
+    "load_existing": false
   },
-  "testing":{
-    "model_name":"",
-    "classpath":""
+  "test_model":{
+    "model_name":"dummy"
   },
   "result_analysis":{
     "results_path":"",
     "class_path":""
   }
-
 }
