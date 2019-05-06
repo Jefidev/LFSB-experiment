@@ -30,3 +30,6 @@ class BaseSplitter(object):
 
     def set_split_size(self, split):
         self.split = split
+
+    def set_other_config(self, config):
+        self.other_config = config

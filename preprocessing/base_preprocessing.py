@@ -14,5 +14,8 @@ class BasePreprocessing(object):
         make_dirs(path)
         self.output_dir = path
 
+    def set_config(self, config):
+        self.config = config
+
     def run(self):
         logger.info("Executing preprocessing")

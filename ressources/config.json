@@ -12,20 +12,18 @@
     "data_directory": "./experiments/linear/processed",
     "splitter_class": "train_test_split.base_splitter.BaseSplitter",
     "test_classpath": "data_sequence.image_sequence.ImageSequence",
-    "train_classpath": "data_sequence.image_sequence.ImageSequence"
+    "train_classpath": "data_sequence.image_sequence.ImageSequence",
+    "image_scale": 0.5 
   },
   "model":{
     "classpath":"models.base_model.BaseModel",
-    "epoch": 20,
-    "batch_size": 30,
-    "model_name":"dummy",
-    "load_existing": false
-  },
-  "test_model":{
-    "model_name":"dummy"
+    "name":"dummy",
+    "load_existing": false,
+    "train": true,
+    "test": true
   },
   "result_analysis":{
-    "results_path":"",
-    "class_path":""
+    "data_path":"",
+    "classpath":"results_analysis.base_results_analysis.BaseResutsAnalysis"
   }
 }

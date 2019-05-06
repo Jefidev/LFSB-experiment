@@ -21,3 +21,14 @@ if pipeline.get("train_test_split"):
 
     train = pipeline["train_test_split"].get_train()
     test = pipeline["train_test_split"].get_test()
+
+if pipeline.get("train"):
+    model = pipeline["train"]
+    model.train(train)
+
+if pipeline.get("test"):
+    model = pipeline["test"]
+    model.test(test)
+
+if pipeline.get("result_analysis"):
+    pipeline["result_analysis"].run()
