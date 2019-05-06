@@ -3,9 +3,9 @@
   "experiment_name": "linear",
 
   "data_processing":{
-    "input_dir": "./experiments/linear",
+    "input_dir": "/run/media/jfink/X/OUTPUT",
     "output_dir": "./experiments/linear/processed",
-    "classpath": "preprocessing.base_preprocessing.BasePreprocessing"
+    "classpath": "preprocessing.middle_image.MiddleImage"
   },
   "train_test_split":{
     "train_split": 0.8,
