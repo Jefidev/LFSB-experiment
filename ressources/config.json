@@ -13,7 +13,8 @@
     "splitter_class": "train_test_split.base_splitter.BaseSplitter",
     "test_classpath": "data_sequence.image_sequence.ImageSequence",
     "train_classpath": "data_sequence.image_sequence.ImageSequence",
-    "image_scale": 0.5 
+    "image_scale": 0.5,
+    "batch_size" : 40
   },
   "model":{
     "classpath":"models.base_model.BaseModel",

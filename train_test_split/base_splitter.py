@@ -29,7 +29,7 @@ class BaseSplitter(object):
         self.test_class = tc
 
     def set_split_size(self, split):
-        self.split = split
+        self.split_size = split
 
     def set_other_config(self, config):
         self.other_config = config
