@@ -1,0 +1,34 @@
+{
+  "randomstate": 42,
+  "experiment_name": "linear",
+
+  "data_processing":{
+    "input_dir": "/run/media/jfink/X/OUTPUT",
+    "output_dir": "./experiments/linear/processed",
+    "classpath": "preprocessing.middle_image.MiddleImage"
+  },
+  "train_test_split":{
+    "train_split": 0.8,
+    "data_directory": "./experiments/linear/processed",
+    "splitter_class": "train_test_split.base_splitter.BaseSplitter",
+    "test_classpath": "data_sequence.image_sequence.ImageSequence",
+    "train_classpath": "data_sequence.image_sequence.ImageSequence",
+    "image_scale": 0.5,
+    "batch_size" : 40
+  },
+  "model":{
+    "classpath":"models.base_model.BaseModel",
+    "name":"dummy",
+    "load_existing": false,
+    "train": true,
+    "test": true,
+    "embedding_size": 128,
+    "input_shape":[512, 512]
+  },
+  "result_analysis":{
+    "data_path":"./results",
+    "classpath":"results_analysis.base_results_analysis.BaseResutsAnalysis",
+    "embedding_file": "preds.np",
+    "label_file": "label.np"
+  }
+}

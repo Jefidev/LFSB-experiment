@@ -10,6 +10,10 @@ opencv-python = "*"
 pandas = "*"
 loguru = "*"
 tensorflow-gpu = "~=1.12.0"
+seaborn = "*"
+sklearn = "*"
+selenium = "*"
+altair = "*"
 
 [requires]
 python_version = "3.6"

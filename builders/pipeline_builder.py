@@ -19,10 +19,10 @@ class PipelineBuilder(object):
 
         self.pipeline = {}
 
-        self._init_preprocessing(config["data_processing"])
-        self._init_train_test_split(config["train_test_split"])
-        self._init_model(config["model"])
-        self._init_result_analysis(config["result_analysis"])
+        self._init_preprocessing(config.get("data_processing"))
+        self._init_train_test_split(config.get("train_test_split"))
+        self._init_model(config.get("model"))
+        self._init_result_analysis(config.get("result_analysis"))
 
     def _init_preprocessing(self, config):
         if config is None:
@@ -74,7 +74,7 @@ class PipelineBuilder(object):
 
         if config["train"]:
             self.pipeline["train"] = model
-        
+
         if config["test"]:
             self.pipeline["test"] = model
 
@@ -89,6 +89,7 @@ class PipelineBuilder(object):
 
         analyser.set_save_path(result_folder)
         analyser.set_data_path(config["data_path"])
+        analyser.set_config(config)
 
         self.pipeline["result_analysis"] = analyser
 

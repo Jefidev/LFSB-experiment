@@ -11,5 +11,8 @@ class BaseResutsAnalysis(object):
     def set_save_path(self, path):
         self.save_path = path
 
+    def set_config(self, config):
+        self.config = config
+
     def run(self):
         logger.info("Running analysis")
