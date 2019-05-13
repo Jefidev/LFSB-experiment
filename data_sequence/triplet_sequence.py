@@ -117,6 +117,9 @@ class TripletSequence(Sequence):
     def set_model(self, model):
         self.model = model
 
+        last_layer = model.layers[-1]
+        self.embedding_size = last_layer.output_shape[1]
+
     def _construct_triplet(self, duets, label):
 
         anchors = []
@@ -173,9 +176,9 @@ class TripletSequence(Sequence):
         return img, neg_list
 
     def _is_semi_hard(self, a, p, neg):
-        a = np.reshape(a, [-1, 128])
-        p = np.reshape(p, [-1, 128])
-        n = np.reshape(neg, [-1, 128])
+        a = np.reshape(a, [-1, self.embedding_size])
+        p = np.reshape(p, [-1, self.embedding_size])
+        n = np.reshape(neg, [-1, self.embedding_size])
 
         if (a == n).all():
             logger.info("Model is collapsing")

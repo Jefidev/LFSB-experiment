@@ -21,7 +21,9 @@
     "name":"dummy",
     "load_existing": false,
     "train": true,
-    "test": true
+    "test": true,
+    "embedding_size": 128,
+    "input_shape":[512, 512]
   },
   "result_analysis":{
     "data_path":"",
