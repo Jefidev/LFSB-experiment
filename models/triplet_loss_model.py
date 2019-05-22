@@ -1,6 +1,15 @@
+import tensorflow as tf
+from keras import backend as K
+from keras import regularizers
+from keras.applications.vgg16 import VGG16
+from keras.callbacks import EarlyStopping, LambdaCallback, ModelCheckpoint
+from keras.layers import Dense, GlobalAveragePooling2D, Input, Lambda, concatenate
+from keras.models import Model, load_model
+from keras.optimizers import Adam
 from loguru import logger
 
 from models.base_model import BaseModel
+from utils.customCallback import ModelUpdater
 
 
 class TripletLossModel(BaseModel):
@@ -8,13 +17,60 @@ class TripletLossModel(BaseModel):
         BaseModel.__init__(self)
 
     def train(self, train):
+        x, _ = train_sequence[0]
+        input_shape = x[0][0].shape
+
+        logger.info("Model input shape is {}".format(input_shape))
+
+        model = None
+
+        if self.config.get("load_existing"):
+            model = self.load()
+        else:
+            model = self.build_new(input_shape)
+
         logger.info("Beginning train")
+
+        early_stop = EarlyStopping(monitor="loss", patience=5)
+        check = ModelCheckpoint(
+            self.file,
+            verbose=0,
+            save_best_only=True,
+            save_weights_only=False,
+            mode="auto",
+            period=1,
+            monitor="loss",
+        )
+
+        model_switcher = ModelUpdater(model, train)
+
+        model.fit_generator(
+            train_sequence, epochs=100, callbacks=[early_stop, check, model_switcher]
+        )
+
+        logger.info("Training complete")
 
     def test(self, test):
         logger.info("Testing model. Results saved in {}".format(self.results_path))
+        model = self.load()
 
-    def build_new(self):
-        input_shape = self.config["input_shape"]
+        logger.info("Extractig embedding network from triplet network")
+
+        embed_input = model.layers[3].get_input_at(-1)
+        embed_output = model.layers[3].get_output_at(-1)
+
+        embedding_model = Model(embed_input, embed_output)
+
+        logger.info("Start predict")
+        preds = embedding_model.predict_generator(test)
+
+        logger.info("Saving preds")
+        preds.dump("{}/preds.np".format(self.results_path))
+
+        logger.info("Saving labels")
+        label.dump("{}/label.np".format(self.results_path))
+
+    def build_new(self, input_shape):
 
         positive_example = Input(input_shape)
         negative_example = Input(input_shape)
@@ -37,16 +93,17 @@ class TripletLossModel(BaseModel):
         )
 
         # compiling final model
-        model.compile(optimizer=Adam(), loss=triplet_loss_v2)
+        model = self.compile_model(model)
 
         return model
 
     def load(self):
         logger.info("Loading model at {}".format(self.file))
+        return load_model(self.file)
 
     def _get_embedding_model(self):
 
-        embed = InceptionV3(
+        embed = VGG16(
             include_top=False, weights="imagenet", input_shape=self.input_shape
         )
 
