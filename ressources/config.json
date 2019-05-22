@@ -9,14 +9,14 @@
     "test_classpath": "data_sequence.image_sequence.ImageSequence",
     "train_classpath": "data_sequence.triplet_sequence.TripletSequence",
     "image_scale": 0.5,
-    "batch_size" : 10,
+    "batch_size" : 5,
     "balance": true
   },
   "model":{
     "classpath":"models.triplet_loss_model.TripletLossModel",
     "name":"balanced",
     "load_existing": false,
-    "train": true,
+    "train": false,
     "test": true,
     "embedding_size": 128
   },

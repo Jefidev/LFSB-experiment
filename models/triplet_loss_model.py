@@ -66,7 +66,8 @@ class TripletLossModel(BaseModel):
 
         logger.info("Saving preds")
         preds.dump("{}/preds.np".format(self.results_path))
-
+        
+        label = test.y.as_matrix()
         logger.info("Saving labels")
         label.dump("{}/label.np".format(self.results_path))
 
@@ -99,7 +100,7 @@ class TripletLossModel(BaseModel):
 
     def load(self):
         logger.info("Loading model at {}".format(self.file))
-        return load_model(self.file)
+        return load_model(self.file, custom_objects={'_triplet_loss_v2': self._triplet_loss_v2})
 
     def _get_embedding_model(self, input_shape):
 
