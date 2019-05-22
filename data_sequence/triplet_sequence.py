@@ -127,7 +127,7 @@ class TripletSequence(Sequence):
         negatives = []
 
         neg_data = self.data[self.data["label"] != label]
-        neg_data = neg_data.sample(500)
+        neg_data = neg_data.sample(frac=0.7)
         neg_list = neg_data["path"].tolist()
         shuffle(neg_list)
         neg_list = [{"path": i} for i in neg_list]

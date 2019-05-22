@@ -3,7 +3,8 @@ from loguru import logger
 from data_sequence.image_sequence import ImageSequence
 from data_sequence.triplet_sequence import TripletSequence
 from train_test_split.base_splitter import BaseSplitter
-
+import pandas as pd
+import numpy as np
 
 class TripletLossSplitter(BaseSplitter):
     def __init__(self):
@@ -18,7 +19,7 @@ class TripletLossSplitter(BaseSplitter):
 
         if "path" in label_df.columns:
             label_df["path"] = label_df["path"].apply(
-                lambda x: "{}/{}".format(self.base_dir, x.split("/")[-1])
+                lambda x: "{}/{}".format(self.working_dir, x.split("/")[-1])
             )
 
         return label_df

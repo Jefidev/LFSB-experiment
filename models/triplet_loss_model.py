@@ -45,7 +45,7 @@ class TripletLossModel(BaseModel):
         model_switcher = ModelUpdater(model, train)
 
         model.fit_generator(
-            train_sequence, epochs=100, callbacks=[early_stop, check, model_switcher]
+            train, epochs=100, callbacks=[early_stop, check, model_switcher], steps_per_epoch=10
         )
 
         logger.info("Training complete")
@@ -77,7 +77,7 @@ class TripletLossModel(BaseModel):
         anchor_example = Input(input_shape)
 
         # Retrieving the base model
-        base_model = self._get_embedding_model()
+        base_model = self._get_embedding_model(input_shape)
 
         positive_embed = base_model(positive_example)
         negative_embed = base_model(negative_example)
@@ -101,10 +101,10 @@ class TripletLossModel(BaseModel):
         logger.info("Loading model at {}".format(self.file))
         return load_model(self.file)
 
-    def _get_embedding_model(self):
+    def _get_embedding_model(self, input_shape):
 
         embed = VGG16(
-            include_top=False, weights="imagenet", input_shape=self.input_shape
+            include_top=False, weights="imagenet", input_shape=input_shape
         )
 
         for layer in embed.layers:
@@ -130,9 +130,10 @@ class TripletLossModel(BaseModel):
         return Model(embed.input, base_model, name="base_model")
 
     def compile_model(self, model):
-        return model.compile(optimizer=Adam(), loss=self.triplet_loss_v2)
+        model.compile(optimizer=Adam(), loss=self._triplet_loss_v2)
+        return model
 
-    def _triplet_loss_v2(y_true, y_preds):
+    def _triplet_loss_v2(self, y_true, y_preds):
         # Alpha = 0.2
 
         embedding_size = self.config["embedding_size"]

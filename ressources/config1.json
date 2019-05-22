@@ -1,0 +1,11 @@
+{
+  "randomstate": 42,
+  "experiment_name": "linear",
+
+  "result_analysis":{
+    "data_path":"./results",
+    "classpath":"results_analysis.embedding_analysis.EmbeddingAnalysis",
+    "embedding_file": "preds_number.np",
+    "label_file": "label_number.np"
+  }
+}
