@@ -1,3 +1,4 @@
+import altair as alt
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -7,7 +8,6 @@ from sklearn.manifold import TSNE
 from sklearn.metrics import confusion_matrix
 from sklearn.utils.multiclass import unique_labels
 
-import altair as alt
 from results_analysis.base_results_analysis import BaseResutsAnalysis
 
 
@@ -26,8 +26,8 @@ class EmbeddingAnalysis(BaseResutsAnalysis):
         preds = "{}/{}".format(self.data, self.config["embedding_file"])
         labels = "{}/{}".format(self.data, self.config["label_file"])
 
-        preds = np.load(preds)
-        labels = np.load(labels)
+        preds = np.load(preds, allow_pickle=True)
+        labels = np.load(labels, allow_pickle=True)
 
         preds = pd.Series(preds.tolist())
         self.data_matrix = pd.DataFrame({"pred": preds, "label": labels})

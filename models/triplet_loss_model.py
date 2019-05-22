@@ -1,9 +1,11 @@
+import numpy as np
 import tensorflow as tf
 from keras import backend as K
 from keras import regularizers
 from keras.applications.vgg16 import VGG16
 from keras.callbacks import EarlyStopping, LambdaCallback, ModelCheckpoint
-from keras.layers import Dense, GlobalAveragePooling2D, Input, Lambda, concatenate
+from keras.layers import (Dense, GlobalAveragePooling2D, Input, Lambda,
+                          concatenate)
 from keras.models import Model, load_model
 from keras.optimizers import Adam
 from loguru import logger
@@ -45,7 +47,10 @@ class TripletLossModel(BaseModel):
         model_switcher = ModelUpdater(model, train)
 
         model.fit_generator(
-            train, epochs=100, callbacks=[early_stop, check, model_switcher], steps_per_epoch=10
+            train,
+            epochs=100,
+            callbacks=[early_stop, check, model_switcher],
+            steps_per_epoch=10,
         )
 
         logger.info("Training complete")
@@ -65,11 +70,11 @@ class TripletLossModel(BaseModel):
         preds = embedding_model.predict_generator(test)
 
         logger.info("Saving preds")
-        preds.dump("{}/preds.np".format(self.results_path))
-        
+        np.save(("{}/preds.np".format(self.results_path), preds)
+
         label = test.y.as_matrix()
         logger.info("Saving labels")
-        label.dump("{}/label.np".format(self.results_path))
+        np.save("{}/label.np".format(self.results_path), label)
 
     def build_new(self, input_shape):
 
@@ -100,13 +105,13 @@ class TripletLossModel(BaseModel):
 
     def load(self):
         logger.info("Loading model at {}".format(self.file))
-        return load_model(self.file, custom_objects={'_triplet_loss_v2': self._triplet_loss_v2})
+        return load_model(
+            self.file, custom_objects={"_triplet_loss_v2": self._triplet_loss_v2}
+        )
 
     def _get_embedding_model(self, input_shape):
 
-        embed = VGG16(
-            include_top=False, weights="imagenet", input_shape=input_shape
-        )
+        embed = VGG16(include_top=False, weights="imagenet", input_shape=input_shape)
 
         for layer in embed.layers:
             layer.trainable = False
