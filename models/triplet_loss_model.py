@@ -17,7 +17,7 @@ class TripletLossModel(BaseModel):
         BaseModel.__init__(self)
 
     def train(self, train):
-        x, _ = train_sequence[0]
+        x, _ = train[0]
         input_shape = x[0][0].shape
 
         logger.info("Model input shape is {}".format(input_shape))
