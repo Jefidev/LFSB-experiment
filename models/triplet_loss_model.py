@@ -70,11 +70,11 @@ class TripletLossModel(BaseModel):
         preds = embedding_model.predict_generator(test)
 
         logger.info("Saving preds")
-        np.save(("{}/preds.np".format(self.results_path), preds)
+        np.save("{}/preds.np".format(self.results_path), preds)
 
         label = test.y.as_matrix()
         logger.info("Saving labels")
-        np.save("{}/label.np".format(self.results_path), label)
+        np.save("{}/label.np".format(self.results_path), label))
 
     def build_new(self, input_shape):
 
