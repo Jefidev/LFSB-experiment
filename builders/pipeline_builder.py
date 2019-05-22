@@ -67,11 +67,6 @@ class PipelineBuilder(object):
         model.set_results_path(results_path)
         model.set_config(config)
 
-        if config["load_existing"]:
-            model.load()
-        else:
-            model.build_new()
-
         if config["train"]:
             self.pipeline["train"] = model
 
