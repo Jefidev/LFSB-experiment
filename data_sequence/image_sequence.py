@@ -5,7 +5,6 @@ from keras.utils import Sequence
 
 
 class ImageSequence(Sequence):
-
     def __init__(self, x, y, batch_size, resize=None):
         self.x = x
         self.y = y
@@ -28,8 +27,8 @@ class ImageSequence(Sequence):
         return img
 
     def __getitem__(self, idx):
-        batch_id = self.x[idx * self.batch:(idx + 1) * self.batch]
-        batch_y = self.y[idx * self.batch:(idx + 1) * self.batch]
+        batch_id = self.x[idx * self.batch : (idx + 1) * self.batch]
+        batch_y = self.y[idx * self.batch : (idx + 1) * self.batch]
 
         # Creating images
         X = np.array([self._load_images(id_img) for id_img in batch_id])

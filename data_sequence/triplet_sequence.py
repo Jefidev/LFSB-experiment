@@ -1,11 +1,8 @@
-import random
 from random import shuffle
 
 import cv2
 import numpy as np
 import tensorflow as tf
-from keras import backend as K
-from keras.models import Model
 from keras.utils import Sequence
 from loguru import logger
 
@@ -47,7 +44,7 @@ class TripletSequence(Sequence):
         """
         logger.info("Starting to create batch")
         i = 0
-        triplets = []
+
         pos = []
         neg = []
         anch = []

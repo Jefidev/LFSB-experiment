@@ -1,9 +1,7 @@
 import csv
-import json
 import os
 from pathlib import Path
 
-import pandas as pd
 import scipy.misc
 from loguru import logger
 
@@ -19,7 +17,7 @@ class MiddleImage(BasePreprocessing):
         logger.info("Running preprocessing")
         root = Path(self.input_dir)
         labels = []
-        
+
         for sign_dir in root.iterdir():
             if sign_dir.is_dir():
                 name = sign_dir.stem

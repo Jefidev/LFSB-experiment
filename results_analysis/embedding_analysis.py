@@ -81,23 +81,25 @@ class EmbeddingAnalysis(BaseResutsAnalysis):
             label = self.data_matrix["label"].values
             self._create_plot(r, label, p)
 
-    
     def _reduce_dim(self, perplexity):
         preds = self.data_matrix["pred"].values.tolist()
 
-        preds_reduced = TSNE(n_components=2, perplexity = perplexity).fit_transform(preds)
+        preds_reduced = TSNE(n_components=2, perplexity=perplexity).fit_transform(preds)
         return preds_reduced
 
-
     def _create_plot(self, preds_reduced, label, perplex):
-        plot_df = pd.DataFrame({'X':preds_reduced[:,0],'Y':preds_reduced[:,1], 'label': label})
+        plot_df = pd.DataFrame(
+            {"X": preds_reduced[:, 0], "Y": preds_reduced[:, 1], "label": label}
+        )
 
-        #plot_df["count"] = plot_df.apply(lambda row: len(plot_df[plot_df["label"] == row["label"]]), axis=1)
-        #plot_df = plot_df[plot_df["count"] > 45]
+        # plot_df["count"] = plot_df.apply(lambda row: len(plot_df[plot_df["label"] == row["label"]]), axis=1)
+        # plot_df = plot_df[plot_df["count"] > 45]
 
-        chart = alt.Chart(plot_df).mark_circle(size=60).encode(
-            x='X',
-            y='Y',
-            color='label').interactive()
-        
+        chart = (
+            alt.Chart(plot_df)
+            .mark_circle(size=60)
+            .encode(x="X", y="Y", color="label")
+            .interactive()
+        )
+
         chart.save("{}/tsne_{}.png".format(self.save_path, perplex))

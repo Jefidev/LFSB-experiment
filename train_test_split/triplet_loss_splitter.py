@@ -6,6 +6,7 @@ from train_test_split.base_splitter import BaseSplitter
 import pandas as pd
 import numpy as np
 
+
 class TripletLossSplitter(BaseSplitter):
     def __init__(self):
         BaseSplitter.__init__(self)

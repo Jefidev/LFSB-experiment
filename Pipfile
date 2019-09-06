@@ -9,11 +9,20 @@ numpy = "*"
 opencv-python = "*"
 pandas = "*"
 loguru = "*"
-tensorflow-gpu = "~=1.12.0"
+tensorflow-gpu = "*"
 seaborn = "*"
 sklearn = "*"
 selenium = "*"
 altair = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.7"
+
+[dev-packages]
+flake8 = "*"
+black = "*"
+gitsome = "*"
+autopep8 = "*"
+
+[pipenv]
+allow_prereleases = true
